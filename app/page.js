@@ -1,113 +1,204 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import {
+  ShieldCheck,
+  Star,
+  Briefcase,
+  Clock,
+  LogOut,
+  ListTodo,
+  Phone,
+  User,
+  Power,
+} from "lucide-react";
+import Link from "next/link";
+
+export default function WorkerHome() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [worker, setWorker] = useState(null);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+
+  /* 🔐 FETCH WORKER FROM DB */
+  useEffect(() => {
+    async function fetchWorker() {
+      try {
+        const res = await fetch("/api/worker/profile", { cache: "no-store" });
+        if (!res.ok) {
+          router.push("/worker-login");
+          return;
+        }
+        const data = await res.json();
+        setWorker(data.worker);
+        setLoading(false);
+      } catch {
+        router.push("/worker-login");
+      }
+    }
+    fetchWorker();
+  }, [router]);
+
+  /* 🔁 TOGGLE AVAILABILITY */
+  const toggleAvailability = async () => {
+    if (!worker) return;
+
+    const newStatus =
+      worker.availability === "AVAILABLE" ? "OFFLINE" : "AVAILABLE";
+
+    try {
+      setUpdatingStatus(true);
+
+      const res = await fetch("/api/worker/availability", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ availability: newStatus }),
+      });
+
+      if (!res.ok) throw new Error();
+
+      setWorker((prev) => ({ ...prev, availability: newStatus }));
+    } catch {
+      alert("Failed to update status");
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
+  /* 🚪 LOGOUT */
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
+    router.push("/worker-login");
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#030712] text-white">
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const isOnline = worker.availability === "AVAILABLE";
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="min-h-screen bg-[#030712] text-white flex flex-col">
+
+      {/* HEADER */}
+      <header className="flex justify-between items-center px-6 py-6">
+        <div>
+          <h1 className="text-2xl font-black">
+            WORKER<span className="text-blue-500">PRO</span>
+          </h1>
+          <div className="flex items-center gap-2 mt-1 text-xs text-gray-400 uppercase">
+            <ShieldCheck size={14} className="text-emerald-400" />
+            ID: {worker.workerId}
+          </div>
         </div>
-      </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={handleLogout}
+          className="p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20"
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+          <LogOut size={18} />
+        </button>
+      </header>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
+      {/* PROFILE */}
+      <main className="flex-1 px-6 space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-[#111827]/70 rounded-[2.5rem] p-6 border border-white/5"
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+          <div className="flex justify-between items-start">
+            <div>
+              <h2 className="text-xl font-black">{worker.name}</h2>
+              <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">
+                {worker.role === "CL" ? "Cleaning Professional" : "Service Pro"}
+              </p>
+            </div>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+            {/* ONLINE / OFFLINE BUTTON */}
+            <button
+              disabled={updatingStatus}
+              onClick={toggleAvailability}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition
+                ${
+                  isOnline
+                    ? "bg-emerald-500/20 text-emerald-400"
+                    : "bg-gray-500/20 text-gray-400"
+                }
+              `}
+            >
+              <Power size={14} />
+              {isOnline ? "Online" : "Offline"}
+            </button>
+          </div>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+          <div className="grid grid-cols-3 gap-4 mt-6">
+            <Stat icon={<Star size={18} />} label="Rating" value="4.7" />
+            <Stat icon={<Briefcase size={18} />} label="Experience" value="7 yrs" />
+            <Stat
+              icon={<Clock size={18} />}
+              label="Status"
+              value={worker.availability}
+            />
+          </div>
+        </motion.div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2.5rem] p-8"
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
+          <h3 className="text-xl font-black mb-2">New tasks are waiting</h3>
+          <p className="text-blue-100/80 text-sm mb-6">
+            Go online to receive nearby service requests.
           </p>
-        </a>
-      </div>
-    </main>
+
+          <Link
+            href="/tasks"
+            className="block text-center bg-white text-black py-4 rounded-2xl font-black uppercase text-xs"
+          >
+            View Tasks
+          </Link>
+        </motion.div>
+      </main>
+
+      {/* NAV */}
+      <nav className="sticky bottom-0 bg-[#030712]/90 border-t border-white/5 px-4 py-4">
+        <div className="grid grid-cols-4 max-w-lg mx-auto">
+          <NavItem href="/worker-home" icon={ListTodo} label="Home" />
+          <NavItem href="/tasks" icon={Briefcase} label="Tasks" />
+          <NavItem href="/contact" icon={Phone} label="Support" />
+          <NavItem href="/profile" icon={User} label="Profile" />
+        </div>
+      </nav>
+    </div>
+  );
+}
+
+/* COMPONENTS */
+function Stat({ icon, label, value }) {
+  return (
+    <div className="bg-white/5 rounded-2xl p-4 text-center">
+      <div className="flex justify-center mb-2 text-blue-400">{icon}</div>
+      <p className="text-xs text-gray-400 uppercase">{label}</p>
+      <p className="font-black text-lg">{value}</p>
+    </div>
+  );
+}
+
+function NavItem({ href, icon: Icon, label }) {
+  return (
+    <Link href={href} className="flex flex-col items-center gap-1 text-gray-400 hover:text-blue-400">
+      <Icon size={20} />
+      <span className="text-[9px] font-black uppercase">{label}</span>
+    </Link>
   );
 }
