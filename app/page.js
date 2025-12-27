@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import {
   ShieldCheck,
   Star,
+  Check,
   Briefcase,
   Clock,
   LogOut,
@@ -173,7 +174,7 @@ export default function WorkerHome() {
       {/* NAV */}
       <nav className="sticky bottom-0 bg-[#030712]/90 border-t border-white/5 px-4 py-4">
         <div className="grid grid-cols-4 max-w-lg mx-auto">
-          <NavItem href="/worker-home" icon={ListTodo} label="Home" />
+          <NavItem href="/accepted" icon={Check} label="Accepted" />
           <NavItem href="/tasks" icon={Briefcase} label="Tasks" />
           <NavItem href="/contact" icon={Phone} label="Support" />
           <NavItem href="/profile" icon={User} label="Profile" />

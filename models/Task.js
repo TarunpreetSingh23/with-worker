@@ -20,7 +20,10 @@ const TaskSchema = new mongoose.Schema({
       category: { type: String, required: true },
     },
   ],
-
+otp: {
+  code: { type: String },
+  verified: { type: Boolean, default: false },
+},
   subtotal: { type: Number, required: true },
   discount: { type: Number, required: true },
   total: { type: Number, required: true },
@@ -33,7 +36,7 @@ const TaskSchema = new mongoose.Schema({
       workerId: { type: String, required: true },
       status: {
         type: String,
-        enum: ["pending", "accepted", "rejected"],
+        enum: ["pending", "accepted", "In Progress","rejected"],
         default: "pending",
       },
     },
@@ -43,8 +46,21 @@ const TaskSchema = new mongoose.Schema({
   is_rejected: { type: Boolean, default: false },
   is_completed: { type: Boolean, default: false },
   is_canceled: { type: Boolean, default: false },
+  is_requested: { type: Boolean, default: false },
   invoiceUrl: {
   type: String,
+},
+serviceOtp: {
+  code: {
+    type: String,
+  },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
+  generatedAt: {
+    type: Date,
+  },
 },
 
 invoiceGeneratedAt: {

@@ -112,7 +112,7 @@ export default function TasksPage() {
 
   const navLinks = [
     { title: "Home", icon: Home, href: "/" },
-    { title: "Accepted", icon: Check, href: "/worker/accepted" },
+    { title: "Accepted", icon: Check, href: "/accepted" },
     { title: "Contact", icon: Phone, href: "/contact" },
     { title: "Profile", icon: User, href: "/worker/profile" },
   ];

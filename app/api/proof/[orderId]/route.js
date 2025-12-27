@@ -33,7 +33,7 @@ export async function POST(request, { params }) {
       );
 
     const worker = task.assignedWorkers.find(
-      (w) => w.workerId === workerId && w.status === "Accepted"
+      (w) => w.workerId === workerId && w.status === "accepted"
     );
 
     if (!worker) {

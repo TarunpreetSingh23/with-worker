@@ -4,13 +4,8 @@ import Task from "@/models/Task";
 
 export async function PATCH(request) {
   try {
-    // Connect DB
     await connectDB();
-
-    // Parse body
     const { taskId, workerId, action } = await request.json();
-
-    // Fetch task
     const task = await Task.findById(taskId);
     if (!task) {
       return NextResponse.json(
@@ -24,7 +19,6 @@ export async function PATCH(request) {
     console.log("Type of assignedWorkers:", typeof task.assignedWorkers);
     console.log("Is array?", Array.isArray(task.assignedWorkers));
 
-    // Find assigned worker using prefix match
     const workerEntry = task.assignedWorkers.find((w) => {
       console.log("Worker in task:", w.workerId);
       return w.workerId.startsWith(workerId);
@@ -37,24 +31,19 @@ export async function PATCH(request) {
       );
     }
 
-    // Update worker status
     workerEntry.status = action === "accept" ? "accepted" : "rejected";
 
     if (action === "accept") {
       task.status = "accepted";
       task.is_approved = true;
 
-      // Reject all other workers
       task.assignedWorkers.forEach((w) => {
         if (w.workerId !== workerEntry.workerId) {
           w.status = "rejected";
         }
       });
     } else if (action === "reject") {
-      // Mark worker rejected
       workerEntry.status = "rejected";
-
-      // If all rejected
       const allRejected = task.assignedWorkers.every(
         (w) => w.status === "rejected"
       );
