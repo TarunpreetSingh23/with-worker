@@ -182,7 +182,7 @@ export default function TasksPage() {
                   </div>
 
                   <div className="p-4 bg-slate-50 border-t">
-                    {workerEntry?.status === "pending" && (
+                    {workerEntry?.status === "pending" && task.status !== "Canceled" &&  (
                       <div className="flex gap-3">
                         <button
                           onClick={() => handleAction(task._id, "accept")}
