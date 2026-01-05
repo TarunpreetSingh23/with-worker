@@ -3,17 +3,16 @@ import Proof from "@/models/Proof";
 import connectDB from "@/lib/mongodb";
 import Task from "@/models/Task";
 
-export const config = {
-  api: { bodyParser: { sizeLimit: "10mb" } }, // allow larger images
-};
+export const runtime = "nodejs"; // required for Buffer & MongoDB
 
-// `params` contains the orderId from the URL: /proof/[orderId]
+// POST /api/proof/[orderId]
 export async function POST(request, { params }) {
   try {
     await connectDB();
 
-    const { orderId } = params; // get orderId from URL
+    const { orderId } = params;
     const formData = await request.formData();
+
     const workerId = formData.get("workerId");
     const file = formData.get("image");
 
@@ -24,13 +23,14 @@ export async function POST(request, { params }) {
       );
     }
 
-    // ✅ Check if worker is assigned and accepted
+    // ✅ Check task + worker authorization
     const task = await Task.findOne({ order_id: orderId });
-    if (!task)
+    if (!task) {
       return NextResponse.json(
         { success: false, message: "Order not found." },
         { status: 404 }
       );
+    }
 
     const worker = task.assignedWorkers.find(
       (w) => w.workerId === workerId && w.status === "accepted"
@@ -52,18 +52,17 @@ export async function POST(request, { params }) {
       );
     }
 
+    // ✅ Convert image to base64
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const base64Image = `data:${file.type};base64,${buffer.toString("base64")}`;
 
-    // ✅ Create proof
+    // ✅ Save proof
     const proof = await Proof.create({
       workerId,
       orderId,
       image: base64Image,
     });
-
-    console.log("Proof successfully saved.");
 
     return NextResponse.json(
       { success: true, message: "Proof uploaded successfully.", proof },
