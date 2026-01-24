@@ -187,7 +187,7 @@ export default function WorkerHome() {
           <NavItem href="/accepted" icon={Check} label="Accepted" />
           <NavItem href="/tasks" icon={Briefcase} label="Tasks" />
           <NavItem href="/contact" icon={Phone} label="Help" />
-          <NavItem href="/profile" icon={User} label="Settings" />
+          <NavItem href="/profit" icon={User} label="Settings" />
         </div>
       </nav>
     </div>
