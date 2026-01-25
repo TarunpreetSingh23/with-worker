@@ -114,7 +114,7 @@ export default function TasksPage() {
     { title: "Home", icon: Home, href: "/" },
     { title: "Accepted", icon: Check, href: "/accepted" },
     { title: "Contact", icon: Phone, href: "/contact" },
-    { title: "Profile", icon: User, href: "/worker/profile" },
+    { title: "Products", icon: User, href: "/profit" },
   ];
 
   const getStatusBadge = (status) => {
