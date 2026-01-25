@@ -19,7 +19,7 @@ export default function TasksPage() {
   const [worker, setWorker] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [processingId, setProcessingId] = useState(null); // Local loading state
+  const [processingId, setProcessingId] = useState(null);
   const [otpInput, setOtpInput] = useState("");
 
   /* 🔐 AUTH */
@@ -34,7 +34,7 @@ export default function TasksPage() {
     loadWorker();
   }, [router]);
 
-  /* 📦 TASKS */
+
   const fetchTasks = async () => {
     if (!worker?.workerId) return;
     const r = await fetch(`/api/tasks?workerId=${worker.workerId}`, { cache: "no-store" });
@@ -54,8 +54,27 @@ export default function TasksPage() {
       )
     );
   }, [tasks, worker]);
+ const completedTasks = tasks.filter(t =>
+  t.assignedWorkers.some(w => w.workerId === worker.workerId) &&
+  t.is_completed
+);
 
-  // Handle action without full page reload
+useEffect(() => {
+  if (completedTasks.length > 0) {
+    fetch("/api/worker/earnings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        workerId: worker.workerId,
+        tasks: completedTasks,
+      }),
+    });
+  }
+}, [completedTasks]);
+
+
+
+
   const handleAction = async (id, apiPath, body) => {
     setProcessingId(id);
     try {

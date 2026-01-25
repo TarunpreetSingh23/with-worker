@@ -22,6 +22,11 @@ const WorkerSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
     },
+    earning:{
+      type:Number,
+      default:0,
+        
+    },
 
     role: {
       type: String,
