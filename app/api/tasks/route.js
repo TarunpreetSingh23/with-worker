@@ -19,7 +19,7 @@ export async function GET(req) {
     // find tasks matching worker's role
         // match tasks where order_id starts with worker prefix
     const tasks = await Task.find({ order_id: { $regex: `^${rolePrefix}` } });
-
+console.log(tasks)
     return new Response(JSON.stringify(tasks), { status: 200 });
   } catch (err) {
     console.error("Error fetching tasks:", err);

@@ -5,7 +5,8 @@ import Task from "@/models/Task";
 export async function PATCH(request) {
   try {
     await connectDB();
-    const { taskId, workerId, action } = await request.json();
+    const { taskId, workerId, action, cart } = await request.json();
+
     const task = await Task.findById(taskId);
     if (!task) {
       return NextResponse.json(
@@ -13,7 +14,7 @@ export async function PATCH(request) {
         { status: 404 }
       );
     }
-
+  console.log(cart);
     console.log("Task fetched:", task);
     console.log("Assigned workers:", task.assignedWorkers);
     console.log("Type of assignedWorkers:", typeof task.assignedWorkers);

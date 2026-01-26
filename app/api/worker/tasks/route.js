@@ -29,7 +29,7 @@ export async function POST(req) {
 
     // 5. Save the task
     await task.save();
-
+    console.log(task);
     return NextResponse.json({ success: true, task }, { status: 201 });
   } catch (err) {
     console.error("Error creating task:", err);

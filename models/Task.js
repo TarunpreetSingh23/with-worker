@@ -7,36 +7,36 @@ const TaskSchema = new mongoose.Schema({
     unique: true,
   },
   customerName: { type: String, required: true },
-  email: { type: String }, // optional
+  email: { type: String },
   phone: { type: String, required: true },
+  loginPhone: { type: String},
   address: { type: String, required: true },
   pincode: { type: String, required: true },
 
-  cart: [
+  cart:[
     {
       name: { type: String, required: true },
       price: { type: Number, required: true },
       quantity: { type: Number, default: 1 },
       category: { type: String, required: true },
+      earning:{type:Number,required: true},
+      profit:{type:Number,required: true},
     },
   ],
-otp: {
-  code: { type: String },
-  verified: { type: Boolean, default: false },
-},
+
   subtotal: { type: Number, required: true },
   discount: { type: Number, required: true },
   total: { type: Number, required: true },
   paymentMethod: { type: String, default: "Pay After Service" },
   date: { type: String, required: true },
   timeSlot: { type: String, required: true },
-
+  
   assignedWorkers: [
     {
       workerId: { type: String, required: true },
       status: {
         type: String,
-        enum: ["pending", "accepted", "In Progress","rejected"],
+        enum: ["pending", "accepted","In Progress", "rejected"],
         default: "pending",
       },
     },

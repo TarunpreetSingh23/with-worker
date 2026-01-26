@@ -91,33 +91,34 @@ export default function TasksPage() {
       })
       .catch((err) => console.error("Task fetch error:", err));
   }, [worker]);
+ console.log(tasks)
+ const handleAction = async (task, action) => {
+  try {
+    const res = await fetch(`/api/tasks/respond`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        taskId: task._id,
+        workerId: worker.workerId,
+        action,
+        cart: task.cart, // ✅ send cart data
+      }),
+    });
 
-  const handleAction = async (taskId, action) => {
-    try {
-      const res = await fetch(`/api/tasks/respond`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          taskId,
-          workerId: worker.workerId,
-          action,
-        }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        alert(err.message);
-        return;
-      }
-
-      const updated = await res.json();
-      setTasks((prev) =>
-        prev.map((t) => (t._id === taskId ? updated.task : t))
-      );
-    } catch (err) {
-      console.error("Task update error:", err);
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.message);
+      return;
     }
-  };
+
+    const updated = await res.json();
+    setTasks((prev) =>
+      prev.map((t) => (t._id === task._id ? updated.task : t))
+    );
+  } catch (err) {
+    console.error("Task update error:", err);
+  }
+};
 
   if (loading) {
     return (
@@ -279,13 +280,13 @@ export default function TasksPage() {
                     {workerEntry?.status === "pending" && task.status !== "Canceled" && (
                       <div className="flex gap-3">
                         <button
-                          onClick={() => handleAction(task._id, "reject")}
+                          onClick={() => handleAction(task, "reject")}
                           className="flex-1 py-3.5 text-sm font-bold text-red-600 bg-white border border-red-100 rounded-xl hover:bg-red-50 transition-colors"
                         >
                           Reject
                         </button>
                         <button
-                          onClick={() => handleAction(task._id, "accept")}
+                          onClick={() => handleAction(task, "accept")}
                           className="flex-[2] py-3.5 text-sm font-bold text-white bg-blue-600 rounded-xl shadow-lg shadow-blue-600/20 hover:bg-blue-700 active:scale-95 transition-all"
                         >
                           Accept Job
