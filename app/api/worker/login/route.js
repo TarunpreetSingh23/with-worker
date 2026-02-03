@@ -1,4 +1,3 @@
-
 import { cookies } from "next/headers";
 import { SignJWT } from "jose";
 import connectDB from "@/lib/mongodb";
@@ -10,10 +9,13 @@ const SECRET = new TextEncoder().encode(
 
 export async function POST(req) {
   try {
-    const { workerId } = await req.json();
+    const { workerId, password } = await req.json();
 
-    if (!workerId) {
-      return Response.json({ error: "Worker ID required" }, { status: 400 });
+    if (!workerId || !password) {
+      return Response.json(
+        { error: "Worker ID and Password required" },
+        { status: 400 }
+      );
     }
 
     await connectDB();
@@ -28,6 +30,17 @@ export async function POST(req) {
         { status: 401 }
       );
     }
+
+    /* 🔐 PASSWORD CHECK */
+const ALLOWED_PASSWORDS = ["123", "456", "789"];
+
+if (!ALLOWED_PASSWORDS.includes(password)) {
+  return Response.json(
+    { error: "Invalid Password" },
+    { status: 401 }
+  );
+}
+
 
     /* ✅ CREATE JWT SESSION */
     const token = await new SignJWT({

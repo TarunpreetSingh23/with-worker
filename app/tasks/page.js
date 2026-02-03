@@ -91,34 +91,34 @@ export default function TasksPage() {
       })
       .catch((err) => console.error("Task fetch error:", err));
   }, [worker]);
- console.log(tasks)
- const handleAction = async (task, action) => {
-  try {
-    const res = await fetch(`/api/tasks/respond`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        taskId: task._id,
-        workerId: worker.workerId,
-        action,
-        cart: task.cart, // ✅ send cart data
-      }),
-    });
 
-    if (!res.ok) {
-      const err = await res.json();
-      alert(err.message);
-      return;
+  const handleAction = async (task, action) => {
+    try {
+      const res = await fetch(`/api/tasks/respond`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          taskId: task._id,
+          workerId: worker.workerId,
+          action,
+          cart: task.cart, // ✅ send cart data
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.message);
+        return;
+      }
+
+      const updated = await res.json();
+      setTasks((prev) =>
+        prev.map((t) => (t._id === task._id ? updated.task : t))
+      );
+    } catch (err) {
+      console.error("Task update error:", err);
     }
-
-    const updated = await res.json();
-    setTasks((prev) =>
-      prev.map((t) => (t._id === task._id ? updated.task : t))
-    );
-  } catch (err) {
-    console.error("Task update error:", err);
-  }
-};
+  };
 
   if (loading) {
     return (
@@ -176,7 +176,8 @@ export default function TasksPage() {
             </div>
             <h2 className="text-lg font-bold text-gray-900 mb-2">No jobs available</h2>
             <p className="text-sm text-gray-500 max-w-[250px] leading-relaxed">
-              You're all caught up! New service requests will appear here instantly.
+              {/* FIX: Escaped apostrophe here */}
+              You&apos;re all caught up! New service requests will appear here instantly.
             </p>
           </div>
         ) : (

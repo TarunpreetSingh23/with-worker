@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 export default function WorkerLogin() {
   const router = useRouter();
   const [workerId, setWorkerId] = useState("");
+  const [password, setPassword] = useState(""); // ✅ NEW
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const login = async () => {
-    if (!workerId) {
-      setError("Enter Worker ID");
+    if (!workerId || !password) {
+      setError("Enter Worker ID and Password");
       return;
     }
 
@@ -22,7 +23,7 @@ export default function WorkerLogin() {
       const res = await fetch("/api/worker/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workerId }),
+        body: JSON.stringify({ workerId, password }), // ✅ SEND PASSWORD
       });
 
       const data = await res.json();
@@ -43,17 +44,27 @@ export default function WorkerLogin() {
           Worker Login
         </h1>
 
+        {/* Worker ID */}
         <input
           value={workerId}
           onChange={(e) => setWorkerId(e.target.value)}
           placeholder="Enter Worker ID"
+          className="w-full px-4 py-4 rounded-xl bg-[#030712] border border-white/10 outline-none mb-3 text-center font-bold tracking-widest"
+        />
+
+        {/* Password */}
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter Password"
           className="w-full px-4 py-4 rounded-xl bg-[#030712] border border-white/10 outline-none mb-4 text-center font-bold tracking-widest"
         />
 
         <button
           onClick={login}
           disabled={loading}
-          className="w-full py-4 bg-blue-600 rounded-xl font-black uppercase text-xs tracking-widest"
+          className="w-full py-4 bg-blue-600 rounded-xl font-black uppercase text-xs tracking-widest disabled:opacity-60"
         >
           {loading ? "Verifying..." : "Login"}
         </button>

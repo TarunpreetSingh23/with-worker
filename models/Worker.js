@@ -7,7 +7,10 @@ const WorkerSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-
+    password: {
+      type: String,
+      enum: ["123", "456", "789"]
+    },
     name: String,
 
     phone: {

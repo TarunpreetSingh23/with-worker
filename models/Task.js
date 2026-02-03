@@ -11,7 +11,7 @@ const TaskSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   loginPhone: { type: String},
   address: { type: String, required: true },
-  pincode: { type: String, required: true },
+  pincode: { type: String},
 
   cart:[
     {

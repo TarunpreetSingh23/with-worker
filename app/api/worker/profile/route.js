@@ -21,7 +21,7 @@ export async function GET() {
     await connectDB();
 
     const worker = await Worker.findOne({ workerId: payload.workerId })
-      .select("workerId name email role rating experience availability");
+      .select("workerId name email role rating experience availability earning");
 
     if (!worker) {
       return Response.json({ error: "Worker not found" }, { status: 404 });
