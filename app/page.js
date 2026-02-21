@@ -164,7 +164,7 @@ export default function WorkerHome() {
     <NavIcon
       href="/accepted"
       icon={Check}
-      label="Active"
+      label="Accepted"
       active={pathname === "/accepted"}
     />
     <NavIcon

@@ -135,7 +135,7 @@ export default function TasksPage() {
     { title: "Home", icon: Home, href: "/" },
     { title: "Accepted", icon: Check, href: "/accepted" },
     { title: "Contact", icon: Phone, href: "/contact" },
-    { title: "Earnings", icon: User, href: "/profit" },
+    // { title: "Earnings", icon: User, href: "/profit" },
   ];
 
   const getStatusStyle = (status) => {
@@ -159,10 +159,10 @@ export default function TasksPage() {
               Hello, {worker.name?.split(' ')[0] || "Partner"} 👋
             </h1>
           </div>
-          <div className="h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center relative">
+          {/* <div className="h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center relative">
             <Bell size={18} className="text-gray-600" />
             <span className="absolute top-2 right-2.5 h-2 w-2 bg-red-500 rounded-full border-2 border-white"></span>
-          </div>
+          </div> */}
         </div>
       </header>
 
@@ -406,27 +406,80 @@ export default function TasksPage() {
       )}
 
       {/* --- Professional Bottom Navigation --- */}
-      <nav className="fixed bottom-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 pb-safe z-40">
-        <div className="max-w-lg mx-auto grid grid-cols-4 px-2">
-          {navLinks.map((l) => {
-            const active = pathname === l.href;
-            return (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={`flex flex-col items-center justify-center py-3 relative transition-all duration-300 group
-                  ${active ? "text-blue-600" : "text-gray-400 hover:text-gray-600"}`}
-              >
-                {active && (
-                   <span className="absolute top-0 h-0.5 w-10 bg-blue-600 rounded-b-full shadow-[0_2px_10px_rgba(37,99,235,0.5)]"></span>
-                )}
-                <l.icon size={22} strokeWidth={active ? 2.5 : 2} className={`mb-1 transition-transform group-active:scale-90 ${active ? "animate-bounce-short" : ""}`} />
-                <span className={`text-[10px] font-bold tracking-tight ${active ? "opacity-100" : "opacity-80"}`}>{l.title}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
+  <nav
+  className="
+    fixed bottom-4 left-1/2 -translate-x-1/2
+    w-full max-w-[430px]
+    px-5
+    z-40
+  "
+>
+  <div
+    className="
+      bg-[#030712]/90 backdrop-blur-2xl
+      border border-gray-100
+      rounded-2xl
+      shadow-[0_18px_40px_rgba(0,0,0,0.08)]
+      flex justify-between items-center
+      px-6 py-2.5
+    "
+  >
+    {navLinks.map((l) => {
+      const active = pathname === l.href;
+
+      return (
+        <Link
+          key={l.href}
+          href={l.href}
+          className="flex flex-col items-center justify-center relative group"
+        >
+          {/* Active Background Pill */}
+          <div
+            className={`
+              absolute inset-0
+              rounded-xl
+              transition-all duration-300
+              ${
+                active
+                  ? "bg-blue-50 scale-100 opacity-100"
+                  : "scale-90 opacity-0"
+              }
+            `}
+          />
+
+          {/* Icon */}
+          <l.icon
+            size={22}
+            strokeWidth={active ? 2.4 : 2}
+            className={`
+              relative z-10 transition-all duration-200
+              ${
+                active
+                  ? "text-blue-600"
+                  : "text-gray-400 group-hover:text-gray-600"
+              }
+            `}
+          />
+
+          {/* Label */}
+          <span
+            className={`
+              mt-1 text-[10px] font-medium tracking-wide
+              relative z-10 transition-all
+              ${
+                active
+                  ? "text-blue-600"
+                  : "text-gray-400 group-hover:text-gray-600"
+              }
+            `}
+          >
+            {l.title}
+          </span>
+        </Link>
+      );
+    })}
+  </div>
+</nav>
     </div>
   );
 }
