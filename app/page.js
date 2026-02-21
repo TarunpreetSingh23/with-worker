@@ -130,12 +130,51 @@ export default function WorkerHome() {
       </main>
 
       {/* NAV BAR */}
-      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/80 backdrop-blur-2xl border-t border-slate-100 px-8 py-4 flex justify-between items-center z-50">
-          <NavIcon href="/worker-home" icon={Briefcase} label="Home" active={pathname === '/worker-home'} />
-          <NavIcon href="/tasks" icon={Zap} label="Tasks" active={pathname === '/tasks'} />
-          <NavIcon href="/accepted" icon={Check} label="Active" active={pathname === '/accepted'} />
-          <NavIcon href="/contact" icon={Phone} label="Help" active={pathname === '/contact'} />
-      </nav>
+      <nav
+  className="
+    fixed bottom-4 left-1/2 -translate-x-1/2
+    w-full max-w-[430px]
+    px-5
+    z-50
+  "
+>
+  <div
+    className="
+      bg-[#0B1118]/90
+      backdrop-blur-xl
+      border border-white/5
+      rounded-2xl
+      px-6 py-3
+      flex justify-between items-center
+      shadow-[0_15px_40px_rgba(0,0,0,0.35)]
+    "
+  >
+    <NavIcon
+      href="/"
+      icon={Briefcase}
+      label="Home"
+      active={pathname === "/"}
+    />
+    <NavIcon
+      href="/tasks"
+      icon={Zap}
+      label="Tasks"
+      active={pathname === "/tasks"}
+    />
+    <NavIcon
+      href="/accepted"
+      icon={Check}
+      label="Active"
+      active={pathname === "/accepted"}
+    />
+    <NavIcon
+      href="/contact"
+      icon={Phone}
+      label="Help"
+      active={pathname === "/contact"}
+    />
+  </div>
+</nav>
     </div>
   );
 }
