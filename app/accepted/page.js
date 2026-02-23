@@ -100,7 +100,8 @@ useEffect(() => {
   if (!worker) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
+    <div className="min-h-screen bg-white flex justify-center">
+  <div className="w-full max-w-md min-h-screen bg-slate-50 shadow-xl border-x border-slate-200 pb-20">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white px-6 py-5 shadow-sm">
         <h1 className="text-xl font-extrabold tracking-tight text-slate-900">My Tasks</h1>
@@ -197,6 +198,7 @@ useEffect(() => {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 }

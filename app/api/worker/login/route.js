@@ -32,7 +32,7 @@ export async function POST(req) {
     }
 
     /* 🔐 PASSWORD CHECK */
-const ALLOWED_PASSWORDS = ["123", "456", "789"];
+const ALLOWED_PASSWORDS = ["2633", "1852", "3677"];
 
 if (!ALLOWED_PASSWORDS.includes(password)) {
   return Response.json(
