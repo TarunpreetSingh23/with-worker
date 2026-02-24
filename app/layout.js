@@ -14,7 +14,7 @@ import RegisterSW from "./register-sw"; // ✅ ADD THIS
 // });
 
 export const metadata = {
-  title: "Shop ON",
+  title: "Sparky",
   description: "this is leading e commerse paltform",
   manifest: "/manifest.json",            // ✅ ADD
   themeColor: "#0f172a",                 // ✅ ADD
