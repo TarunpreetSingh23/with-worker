@@ -19,10 +19,12 @@ export async function POST(req) {
     }
 
     await connectDB();
-
+ const all=await Worker.find({});
+ console.log(all);
     const worker = await Worker.findOne({
       workerId: workerId.trim().toUpperCase(),
     });
+    console.log(worker);
 
     if (!worker) {
       return Response.json(
